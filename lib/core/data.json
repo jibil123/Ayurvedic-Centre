@@ -1,0 +1,44 @@
+{
+    "status": true,
+    "message": "Success",
+    "patient": [
+        {
+            "id": 3618,
+            "patientdetails_set": [
+                {
+                    "id": 5544,
+                    "male": "1",
+                    "female": "0",
+                    "patient": 3618,
+                    "treatment": 85,
+                    "treatment_name": "Foot Massage "
+                }
+            ],
+            "branch": {
+                "id": 163,
+                "name": "Thondayadu",
+                "patients_count": 19,
+                "location": "Kozhikode",
+                "phone": "9846123456",
+                "mail": "user123@gmail.com",
+                "address": "Kozhikode",
+                "gst": "",
+                "is_active": true
+            },
+            "user": "Calicut",
+            "payment": "Cash",
+            "name": "John",
+            "phone": "963852741",
+            "address": "Kozhikode",
+            "price": null,
+            "total_amount": 1000,
+            "discount_amount": 100,
+            "advance_amount": 500,
+            "balance_amount": 400,
+            "date_nd_time": "2025-10-06T12:50:00",
+            "is_active": true,
+            "created_at": "2025-10-03T18:19:55.275104",
+            "updated_at": "2025-10-03T18:19:55.275121"
+        }
+    ]
+}

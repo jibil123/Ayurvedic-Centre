@@ -1,4 +1,5 @@
 import 'package:ayurvedic_centre/application/controller/home_page_controller.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/registration_screen.dart';
 import 'package:ayurvedic_centre/utils/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -183,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: EdgeInsets.all(16),
                         itemCount: emptyImages.length,
                         itemBuilder: (context, index) {
-                          final images=emptyImages[index];
+                          final images = emptyImages[index];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 25),
                             child: Container(
@@ -191,7 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 200,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: AssetImage(images,),fit: BoxFit.cover,
+                                  image: AssetImage(images),
+                                  fit: BoxFit.cover,
                                 ),
                               ),
                               child: Text('There is no patient list'),
@@ -222,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "${patient.id}. ${patient.name ?? 'Unknown'}",
+                                    "${index + 1}. ${patient.name ?? 'Unknown'}",
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w600,
@@ -320,7 +322,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: SafeArea(
                   top: false,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => RegistrationScreen(),
+                        ),
+                      );
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF006B3E),
                       minimumSize: const Size(double.infinity, 48),

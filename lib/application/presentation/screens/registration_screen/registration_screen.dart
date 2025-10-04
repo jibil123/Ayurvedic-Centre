@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'package:ayurvedic_centre/application/controller/registration_controller.dart';
 import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/hour_and_minutes_widget.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/registration_app_bar.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/registration_pick_date.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/registration_save_button.dart';
 import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/treatment_card.dart';
 import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/treatment_popup.dart';
 import 'package:ayurvedic_centre/domain/model/branch_model/branch_model.dart';
@@ -20,66 +23,7 @@ class RegistrationScreen extends StatelessWidget {
       backgroundColor: Color(0xFFF8F8F8),
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(110), // set your custom height
-        child: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: Column(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Stack(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications_outlined, size: 30),
-                    onPressed: () {},
-                  ),
-                  Positioned(
-                    right: 12,
-                    top: 12,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-          flexibleSpace: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30, bottom: 15),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: const Text(
-                  'Register',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(
-              color: Colors.grey[300], // divider color
-              height: 1,
-            ),
-          ),
-        ),
+        child: RegistrationAppBar(),
       ),
       body: Consumer<RegistrationController>(
         builder: (context, controller, child) {
@@ -118,13 +62,21 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 8),
                   CustomTextFormField(
                     removeErrorOnType: true,
-                    validator: (value) => value == null || value.trim().isEmpty
-                        ? 'Whatsapp no requried'
-                        : null,
                     controller: controller.whatsappController,
                     hintText: 'Enter your WhatsApp number',
                     keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Whatsapp number is required';
+                      } else if (value.trim().length != 10) {
+                        return 'Whatsapp number must be 10 digits';
+                      } else if (!RegExp(r'^[0-9]+$').hasMatch(value.trim())) {
+                        return 'Only numeric digits are allowed';
+                      }
+                      return null;
+                    },
                   ),
+
                   const SizedBox(height: 16),
 
                   // Address Field
@@ -154,6 +106,11 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
+                        icon: Icon(
+                          Icons.keyboard_arrow_down_outlined,
+                          size: 30,
+                          color: primaryColor,
+                        ),
                         value: controller.selectedLocation,
                         isExpanded: true,
                         hint: const Text(
@@ -188,6 +145,11 @@ class RegistrationScreen extends StatelessWidget {
                           ),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<BranchModel>(
+                              icon: Icon(
+                                Icons.keyboard_arrow_down_outlined,
+                                size: 30,
+                                color: primaryColor,
+                              ),
                               value: controller.selectedBranch,
                               isExpanded: true,
                               hint: const Text(
@@ -380,203 +342,21 @@ class RegistrationScreen extends StatelessWidget {
                   textLabel(label: 'Treatment Date'),
 
                   const SizedBox(height: 8),
-                  GestureDetector(
-                    onTap: () async {
-                      final date = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (date != null) {
-                        controller.setTreatmentDate(date);
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 16,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: Colors.grey[300]!),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            controller.selectedTreatmentDate != null
-                                ? '${controller.selectedTreatmentDate!.day}/${controller.selectedTreatmentDate!.month}/${controller.selectedTreatmentDate!.year}'
-                                : 'dd/mm/yyyy',
-                            style: TextStyle(
-                              color: controller.selectedTreatmentDate != null
-                                  ? Colors.black
-                                  : Colors.grey,
-                            ),
-                          ),
-                          const Icon(
-                            Icons.calendar_today,
-                            size: 18,
-                            color: Colors.grey,
-                          ),
-                        ],
-                      ),
-                    ),
+                  DatePickerField(
+                    selectedDate: controller.selectedTreatmentDate,
+                    onDateSelected: controller.setTreatmentDate,
                   ),
+
                   const SizedBox(height: 16),
 
                   // Treatment Time
                   textLabel(label: 'Treatment Time'),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => showHourPicker(context, controller),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey[300]!),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  controller.selectedHour != null
-                                      ? controller.selectedHour!
-                                            .toString()
-                                            .padLeft(2, '0')
-                                      : '00',
-                                  style: TextStyle(
-                                    color: controller.selectedHour != null
-                                        ? Colors.black
-                                        : Colors.grey,
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: Colors.grey,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => showMinutePicker(context, controller),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 16,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Colors.grey[300]!),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  controller.selectedMinute != null
-                                      ? controller.selectedMinute!
-                                            .toString()
-                                            .padLeft(2, '0')
-                                      : 'Minutes',
-                                  style: TextStyle(
-                                    color: controller.selectedMinute != null
-                                        ? Colors.black
-                                        : Colors.grey,
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.keyboard_arrow_down,
-                                  color: Colors.grey,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  TreatmentTimePicker(controller: controller),
                   const SizedBox(height: 32),
 
                   // Save Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        if (formKey.currentState!.validate() &&
-                            controller.addedTreatments.isNotEmpty &&
-                            controller.selectedTreatmentDate != null &&
-                            controller.selectedHour != null &&
-                            controller.selectedMinute != null &&
-                            controller.selectedLocation != null &&
-                            controller.selectedBranch != null) {
-                          controller.register();
-                        } else {
-                          // Collect missing fields
-                          List<String> missingFields = [];
-
-                          if (controller.addedTreatments.isEmpty) {
-                            missingFields.add("Treatment");
-                          }
-                          if (controller.selectedTreatmentDate == null) {
-                            missingFields.add("Treatment Date");
-                          }
-                          if (controller.selectedHour == null) {
-                            missingFields.add("Hour");
-                          }
-                          if (controller.selectedMinute == null) {
-                            missingFields.add("Minute");
-                          }
-                          if (controller.selectedLocation == null) {
-                            missingFields.add("Location");
-                          }
-                          if (controller.selectedBranch == null) {
-                            missingFields.add("Branch");
-                          }
-
-                          String message =
-                              "Please fill: ${missingFields.join(', ')}";
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(message),
-                              backgroundColor: Colors.red,
-                              behavior: SnackBarBehavior.floating,
-                              margin: const EdgeInsets.all(10),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text(
-                        'Save',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
+                  SaveButton(formKey: formKey, controller: controller),
                   const SizedBox(height: 32),
                 ],
               ),

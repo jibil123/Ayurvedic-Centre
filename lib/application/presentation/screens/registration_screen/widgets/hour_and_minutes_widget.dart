@@ -125,3 +125,79 @@ void showHourPicker(
       },
     );
   }
+
+
+class TreatmentTimePicker extends StatelessWidget {
+  final RegistrationController controller;
+
+  const TreatmentTimePicker({super.key, required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus(); // dismiss keyboard
+              showHourPicker(context, controller);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    controller.selectedHour != null
+                        ? controller.selectedHour!.toString().padLeft(2, '0')
+                        : '00',
+                    style: TextStyle(
+                      color: controller.selectedHour != null ? Colors.black : Colors.grey,
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: GestureDetector(
+            onTap: () {
+              FocusScope.of(context).unfocus(); // dismiss keyboard
+              showMinutePicker(context, controller);
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    controller.selectedMinute != null
+                        ? controller.selectedMinute!.toString().padLeft(2, '0')
+                        : 'Minutes',
+                    style: TextStyle(
+                      color: controller.selectedMinute != null ? Colors.black : Colors.grey,
+                    ),
+                  ),
+                  const Icon(Icons.keyboard_arrow_down, color: Colors.grey),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

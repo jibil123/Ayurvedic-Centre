@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Text('  Email',style: TextStyle(fontSize: 17),),
+                    Text('  Email', style: TextStyle(fontSize: 17)),
                     SizedBox(height: 5),
                     CustomTextFormField(
                       removeErrorOnType: true,
@@ -65,7 +65,7 @@ class LoginScreen extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 30),
-                    Text('  Password',style: TextStyle(fontSize: 17),),
+                    Text('  Password', style: TextStyle(fontSize: 17)),
                     SizedBox(height: 5),
                     CustomTextFormField(
                       removeErrorOnType: true,
@@ -98,13 +98,30 @@ class LoginScreen extends StatelessWidget {
                           color: primaryColor,
                         ),
                         child: Center(
-                          child: Text(
-                            'Login',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                          child: Consumer<AuthController>(
+                            builder: (context, ref, child) {
+                              if (ref.isLoading) {
+                                return const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                return Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              }
+                            },
                           ),
                         ),
                       ),

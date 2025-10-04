@@ -185,8 +185,6 @@ class RegistrationController extends ChangeNotifier {
     selectedTreatmentDate = null;
     selectedHour = null;
     selectedMinute = null;
-
-    // Just in case UI needs refresh
     notifyListeners();
   }
 
@@ -198,12 +196,9 @@ class RegistrationController extends ChangeNotifier {
     final Uint8List signImgeBytes = await rootBundle
         .load(signImage)
         .then((data) => data.buffer.asUint8List());
-    // Validate all fields first
 
-    // Prepare treatment data for PDF
     List<Map<String, dynamic>> treatmentList = addedTreatments.map((treatment) {
-      // You'll need to get price from your Treatment model
-      // Assuming Treatment has a price field
+
       final treatmentModel = selectedTreatments.firstWhere(
         (t) => t.id.toString() == treatment.treatmentId,
       );

@@ -1,9 +1,7 @@
 import 'dart:developer';
-
 import 'package:ayurvedic_centre/core/api_end_points.dart';
 import 'package:ayurvedic_centre/domain/model/failure/failure.dart';
 import 'package:ayurvedic_centre/domain/model/patient_list/patient_list.dart';
-import 'package:ayurvedic_centre/domain/model/success_response/success_response.dart';
 import 'package:ayurvedic_centre/domain/repo/home_page_repo.dart';
 import 'package:ayurvedic_centre/service/local_storage/shared_preference.dart';
 import 'package:dartz/dartz.dart';
@@ -44,11 +42,7 @@ class HomePageService implements HomePageRepo {
   @override
   Future<Either<Failure, List<Patient>>> getPatientList() async {
     try {
-      final token= await SharedPreference.getToken();
-      print(token);
       final response = await apiService.get(apiEndPoints.patientList);
-
-      // Check if response data is in expected format
       if (response.data != null && response.data['status'] == true) {
         final List<dynamic> patientJsonList = response.data['patient'] ?? [];
 

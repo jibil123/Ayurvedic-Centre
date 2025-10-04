@@ -1,191 +1,126 @@
+import 'dart:developer';
 import 'package:ayurvedic_centre/application/controller/registration_controller.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/hour_and_minutes_widget.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/treatment_card.dart';
+import 'package:ayurvedic_centre/application/presentation/screens/registration_screen/widgets/treatment_popup.dart';
+import 'package:ayurvedic_centre/domain/model/branch_model/branch_model.dart';
+import 'package:ayurvedic_centre/utils/colors/colors.dart';
 import 'package:ayurvedic_centre/utils/text_form_field/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RegistrationScreen extends StatelessWidget {
-  const RegistrationScreen({Key? key}) : super(key: key);
+  RegistrationScreen({super.key});
 
-  void _showHourPicker(
-    BuildContext context,
-    RegistrationController controller,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          height: 300,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Select Hour',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 25,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(
-                        index.toString().padLeft(2, '0'),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: controller.selectedHour == index
-                              ? const Color(0xFF006B3E)
-                              : Colors.black,
-                          fontWeight: controller.selectedHour == index
-                              ? FontWeight.w600
-                              : FontWeight.normal,
-                        ),
-                      ),
-                      onTap: () {
-                        controller.setHour(index);
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  void _showMinutePicker(
-    BuildContext context,
-    RegistrationController controller,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return Container(
-          height: 300,
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 16),
-              const Text(
-                'Select Minutes',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 60,
-                  itemBuilder: (context, index) {
-                    int minute = index + 1;
-                    return ListTile(
-                      title: Text(
-                        minute.toString().padLeft(2, '0'),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: controller.selectedMinute == minute
-                              ? const Color(0xFF006B3E)
-                              : Colors.black,
-                          fontWeight: controller.selectedMinute == minute
-                              ? FontWeight.w600
-                              : FontWeight.normal,
-                        ),
-                      ),
-                      onTap: () {
-                        controller.setMinute(minute);
-                        Navigator.pop(context);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => RegistrationController(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
+    return Scaffold(
+      backgroundColor: Color(0xFFF8F8F8),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(110), // set your custom height
+        child: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
+          leading: Column(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
           ),
           actions: [
-            IconButton(
-              icon: const Icon(
-                Icons.notifications_outlined,
-                color: Colors.black,
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Stack(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined, size: 30),
+                    onPressed: () {},
+                  ),
+                  Positioned(
+                    right: 12,
+                    top: 12,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              onPressed: () {},
             ),
           ],
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30, bottom: 15),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: const Text(
+                  'Register',
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(
+              color: Colors.grey[300], // divider color
+              height: 1,
+            ),
+          ),
         ),
-        body: Consumer<RegistrationController>(
-          builder: (context, controller, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+      ),
+      body: Consumer<RegistrationController>(
+        builder: (context, controller, child) {
+          log("length branch ${controller.branches.length.toString()}");
+          log(
+            "length treatment ${controller.selectedTreatments.length.toString()}",
+          );
+          return SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Register',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 5),
 
                   // Name Field
-                  const Text(
-                    'Name',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Name'),
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Name is required';
+                      }
+                      return null;
+                    },
                     controller: controller.nameController,
                     hintText: 'Enter your full name',
                   ),
                   const SizedBox(height: 16),
 
                   // WhatsApp Number Field
-                  const Text(
-                    'Whatsapp Number',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Whatsapp Number'),
+
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Whatsapp no requried'
+                        : null,
                     controller: controller.whatsappController,
                     hintText: 'Enter your WhatsApp number',
                     keyboardType: TextInputType.phone,
@@ -193,12 +128,13 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Address Field
-                  const Text(
-                    'Address',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Address'),
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Address no requried'
+                        : null,
                     controller: controller.addressController,
                     hintText: 'Enter your full address',
                     maxLines: 3,
@@ -206,10 +142,8 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Location Dropdown
-                  const Text(
-                    'Location',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Location'),
+
                   const SizedBox(height: 8),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -237,141 +171,125 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-
                   // Branch Dropdown
-                  const Text(
-                    'Branch',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Branch'),
+
                   const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: controller.selectedBranch,
-                        isExpanded: true,
-                        hint: const Text(
-                          'Select the branch',
-                          style: TextStyle(color: Colors.grey),
+                  controller.branchLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : controller.branches.isEmpty
+                      ? const Text('No branches found')
+                      : Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.grey[300]!),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<BranchModel>(
+                              value: controller.selectedBranch,
+                              isExpanded: true,
+                              hint: const Text(
+                                'Select the branch',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              items: controller.branches.map((branch) {
+                                return DropdownMenuItem<BranchModel>(
+                                  value: branch,
+                                  child: Text(branch.name),
+                                );
+                              }).toList(),
+                              onChanged: controller.setBranch,
+                            ),
+                          ),
                         ),
-                        items: controller.branches.map((String branch) {
-                          return DropdownMenuItem<String>(
-                            value: branch,
-                            child: Text(branch),
-                          );
-                        }).toList(),
-                        onChanged: controller.setBranch,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 16),
 
                   // Treatments Section
-                  const Text(
-                    'Treatments',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Treatment Item
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[100],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.grey[300]!),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 6,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF006B3E),
-                            borderRadius: BorderRadius.circular(3),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Couple Combo package i...',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
+                  textLabel(label: 'Treatments'),
+                  const SizedBox(height: 5),
+                  if (controller.addedTreatments.isNotEmpty)
+                    SizedBox(
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: controller.addedTreatments.length,
+                        itemBuilder: (context, index) {
+                          final item = controller.addedTreatments[index];
+                          return TreatmentCard(
+                            index: index,
+                            item: item,
+                            onEdit: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => TreatmentSelectionDialog(
+                                  editIndex: index,
+                                  editItem: item,
                                 ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Male',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF006B3E),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12),
-                                  Text(
-                                    'Female',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF006B3E),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(
-                            Icons.close,
-                            color: Colors.red,
-                            size: 20,
-                          ),
-                          onPressed: () {},
-                          constraints: const BoxConstraints(),
-                          padding: EdgeInsets.zero,
-                        ),
-                      ],
+                              );
+                            },
+                            onDelete: () {
+                              controller.removeTreatmentItem(index);
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 12),
 
                   // Add Treatments Button
-                  TextButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add,
-                      color: Color(0xFF006B3E),
-                      size: 18,
-                    ),
-                    label: const Text(
-                      'Add Treatments',
-                      style: TextStyle(
-                        color: Color(0xFF006B3E),
-                        fontWeight: FontWeight.w500,
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return TreatmentSelectionDialog();
+                          },
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color.fromARGB(
+                          75,
+                          120,
+                          233,
+                          139,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.add, color: Colors.black, size: 18),
+                          const Text(
+                            'Add Treatments',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
                   ),
+
                   const SizedBox(height: 16),
 
                   // Total Amount Field
-                  const Text(
-                    'Total Amount',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Total Amount'),
+
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Total amount is requried'
+                        : null,
                     controller: controller.totalAmountController,
                     keyboardType: TextInputType.number,
                     onChanged: (value) => controller.calculateBalance(),
@@ -379,12 +297,14 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Discount Amount Field
-                  const Text(
-                    'Discount Amount',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Discount Amount'),
+
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Discoutn amountn is requried'
+                        : null,
                     controller: controller.discountAmountController,
                     keyboardType: TextInputType.number,
                     onChanged: (value) => controller.calculateBalance(),
@@ -392,29 +312,34 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Payment Option - Radio Buttons
-                  const Text(
-                    'Payment Option',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Payment Option'),
+
                   const SizedBox(height: 8),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment
+                        .spaceBetween, // distributes items across full width
                     children: controller.paymentOptions.map((option) {
-                      return Expanded(
-                        child: RadioListTile<String>(
-                          title: Text(
-                            option,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          value: option,
-                          groupValue: controller.selectedPaymentOption,
-                          activeColor: const Color(0xFF006B3E),
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity.compact,
-                          onChanged: (value) {
-                            if (value != null) {
-                              controller.setPaymentOption(value);
-                            }
-                          },
+                      return GestureDetector(
+                        onTap: () => controller.setPaymentOption(option),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Radio<String>(
+                              value: option,
+                              groupValue: controller.selectedPaymentOption,
+                              onChanged: (value) {
+                                if (value != null)
+                                  controller.setPaymentOption(value);
+                              },
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              visualDensity: const VisualDensity(
+                                horizontal: -4,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(option, style: const TextStyle(fontSize: 16)),
+                          ],
                         ),
                       );
                     }).toList(),
@@ -422,12 +347,14 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Advance Amount Field
-                  const Text(
-                    'Advance Amount',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Advance Amount'),
+
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Advance amount is requried'
+                        : null,
                     controller: controller.advanceAmountController,
                     keyboardType: TextInputType.number,
                     onChanged: (value) => controller.calculateBalance(),
@@ -435,23 +362,23 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Balance Amount Field
-                  const Text(
-                    'Balance Amount',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Balance Amount'),
+
                   const SizedBox(height: 8),
                   CustomTextFormField(
+                    removeErrorOnType: true,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Balance amount is requried'
+                        : null,
                     controller: controller.balanceAmountController,
                     keyboardType: TextInputType.number,
-                    // readOnly: true,
+                    readOnly: true,
                   ),
                   const SizedBox(height: 16),
 
                   // Treatment Date
-                  const Text(
-                    'Treatment Date',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Treatment Date'),
+
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () async {
@@ -500,16 +427,13 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // Treatment Time
-                  const Text(
-                    'Treatment Time',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
+                  textLabel(label: 'Treatment Time'),
                   const SizedBox(height: 8),
                   Row(
                     children: [
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => _showHourPicker(context, controller),
+                          onTap: () => showHourPicker(context, controller),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -547,7 +471,7 @@ class RegistrationScreen extends StatelessWidget {
                       const SizedBox(width: 16),
                       Expanded(
                         child: GestureDetector(
-                          onTap: () => _showMinutePicker(context, controller),
+                          onTap: () => showMinutePicker(context, controller),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
@@ -590,9 +514,54 @@ class RegistrationScreen extends StatelessWidget {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: controller.register,
+                      onPressed: () {
+                        if (formKey.currentState!.validate() &&
+                            controller.addedTreatments.isNotEmpty &&
+                            controller.selectedTreatmentDate != null &&
+                            controller.selectedHour != null &&
+                            controller.selectedMinute != null &&
+                            controller.selectedLocation != null &&
+                            controller.selectedBranch != null) {
+                          controller.register();
+                        } else {
+                          // Collect missing fields
+                          List<String> missingFields = [];
+
+                          if (controller.addedTreatments.isEmpty) {
+                            missingFields.add("Treatment");
+                          }
+                          if (controller.selectedTreatmentDate == null) {
+                            missingFields.add("Treatment Date");
+                          }
+                          if (controller.selectedHour == null) {
+                            missingFields.add("Hour");
+                          }
+                          if (controller.selectedMinute == null) {
+                            missingFields.add("Minute");
+                          }
+                          if (controller.selectedLocation == null) {
+                            missingFields.add("Location");
+                          }
+                          if (controller.selectedBranch == null) {
+                            missingFields.add("Branch");
+                          }
+
+                          String message =
+                              "Please fill: ${missingFields.join(', ')}";
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(message),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                              margin: const EdgeInsets.all(10),
+                              duration: const Duration(seconds: 3),
+                            ),
+                          );
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF006B3E),
+                        backgroundColor: primaryColor,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -611,10 +580,17 @@ class RegistrationScreen extends StatelessWidget {
                   const SizedBox(height: 32),
                 ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
+    );
+  }
+
+  Text textLabel({required String label}) {
+    return Text(
+      '  ${label}',
+      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
     );
   }
 }

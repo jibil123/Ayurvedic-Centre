@@ -25,18 +25,18 @@ class _SplashScreenState extends State<SplashScreen> {
     // Wait a little for splash effect (optional)
     await Future.delayed(const Duration(seconds: 2));
 
-    if (isLogged) {
-      context.read<HomePageController>().getPatientList();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } else {
+    // if (isLogged) {
+    //   context.read<HomePageController>().getPatientList();
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(builder: (_) => const HomeScreen()),
+    //   );
+    // } else {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );
-    }
+    // }
   }
 
   @override

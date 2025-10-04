@@ -26,6 +26,8 @@ class CustomTextFormField extends StatelessWidget {
   final Color? fillColor;
   final bool? filled;
   final TextAlign? textAlign;
+  final bool removeErrorOnType; // NEW PARAMETER
+  final bool? readOnly; // NEW PARAMETER
 
   const CustomTextFormField({
     super.key,
@@ -54,6 +56,8 @@ class CustomTextFormField extends StatelessWidget {
     this.fillColor,
     this.filled,
     this.textAlign,
+    this.removeErrorOnType = false, // default false
+    this.readOnly,
   });
 
   @override
@@ -67,24 +71,62 @@ class CustomTextFormField extends StatelessWidget {
       maxLength: maxLength,
       enabled: enabled,
       autofocus: autofocus ?? false,
-      style: style,
+      readOnly: readOnly ?? false,
+      style: style ?? const TextStyle(fontSize: 16, color: Colors.black87),
       textAlign: textAlign ?? TextAlign.start,
       validator: validator,
-      onChanged: onChanged,
+      
+      onChanged: (value) {
+        if (onChanged != null) onChanged!(value);
+
+        // only remove error on typing if parameter is true
+      },
       onFieldSubmitted: onFieldSubmitted,
       onTap: onTap,
+      autovalidateMode: removeErrorOnType
+          ? AutovalidateMode.onUserInteraction
+          : AutovalidateMode.disabled,
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: hintStyle,
+        hintStyle:
+            hintStyle ??
+            TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade400,
+              fontWeight: FontWeight.w400,
+            ),
         labelText: labelText,
         labelStyle: labelStyle,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        border: border ?? const OutlineInputBorder(),
-        focusedBorder: focusedBorder,
-        enabledBorder: enabledBorder,
-        fillColor: fillColor,
-        filled: filled ?? false,
+        fillColor: fillColor ?? Colors.grey.shade200,
+        filled: filled ?? true,
+        border:
+            border ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+        enabledBorder:
+            enabledBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+        focusedBorder:
+            focusedBorder ??
+            OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Colors.grey.shade300),
+            ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.red.shade300, width: 2),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.red.shade400, width: 2),
+        ),
       ),
     );
   }

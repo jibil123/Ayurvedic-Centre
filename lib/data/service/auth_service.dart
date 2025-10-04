@@ -1,7 +1,7 @@
 import 'package:ayurvedic_centre/core/api_end_points.dart';
 import 'package:ayurvedic_centre/domain/model/failure/failure.dart';
 import 'package:ayurvedic_centre/domain/model/login_respone/login_response.dart';
-import 'package:ayurvedic_centre/domain/repo/auth_service.dart';
+import 'package:ayurvedic_centre/domain/repo/auth_repo.dart';
 import 'package:ayurvedic_centre/service/local_storage/shared_preference.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -37,10 +37,15 @@ class AuthService implements AuthRepo {
         apiEndPoints.login,
         data: formData,
       );
+      if (response.data != null && response.data['status'] == true) {
+        print('Response Data: ${response.data}');
 
-      print('Response Data: ${response.data}');
-      
-      return Right(LoginResponse.fromJson(response.data));
+        return Right(LoginResponse.fromJson(response.data));
+      } else {
+        return Left(
+          Failure(message: response.data['message'] ?? 'something went wrong'),
+        );
+      }
     } catch (e) {
       print('Error: $e');
       return Left(Failure(message: 'Something went wrong'));
